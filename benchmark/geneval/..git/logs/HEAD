@@ -1,0 +1,2 @@
+0000000000000000000000000000000000000000 af4902f24d3ca90ebbb446dd9891a59e0f82725f root <root@aiplatform-wlf3-ge98-60.idchb2az3.hb2.kwaidc.com> 1752479590 +0800	clone: from https://github.com/djghosh13/geneval.git
+af4902f24d3ca90ebbb446dd9891a59e0f82725f 73345edb98e3ff503a4518c375e0235dc4504073 root <root@aiplatform-wlf3-ge98-60.idchb2az3.hb2.kwaidc.com> 1755072822 +0800	commit: change model path and eval.sh

@@ -1,0 +1,15 @@
+change model path and eval.sh
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Committer: root <root@aiplatform-wlf3-ge98-60.idchb2az3.hb2.kwaidc.com>
+#
+# On branch main
+# Your branch is up to date with 'origin/main'.
+#
+# Changes to be committed:
+#	new file:   eval.sh
+#	modified:   evaluation/evaluate_images.py
+#	modified:   evaluation/summary_scores.py
+#	new file:   requirements.txt
+#
