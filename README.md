@@ -4,7 +4,7 @@
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-blue.svg)]((https://github.com/Kwai-Klear/AR-GRPO/graphs/commit-activity))
 ![Contributing](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)
 
-**[[arXiv]](https://arxiv.org/pdf/2508.06924) | [[Codes]](https://github.com/Kwai-Klear/AR-GRPO) | [🤗 Huggingface]** <br> 
+**[[arXiv]](https://arxiv.org/pdf/2508.06924) | [[Codes]](https://github.com/Kwai-Klear/AR-GRPO) | [[🤗 Huggingface]](https://huggingface.co/collections/CSshihao/ar-grpo-689c970f4c848f01a162352a)** <br> 
 Shihao Yuan, Yahui Liu♥, Yang Yue, Jingyuan Zhang, Wangmeng Zuo♥, Qi Wang, Fuzheng Zhang, Guorui Zhou <br>
 *♥ Corresponding author*
 
@@ -23,7 +23,6 @@ consistent improvements across various evaluation metrics, establishing the viab
 RL-based optimization for AR image generation and opening new avenues for controllable and
 high-quality image synthesis. 
 
-**Models are coming soon ...**
 
 ## Installation
 Create a new Python environment with `conda`,
