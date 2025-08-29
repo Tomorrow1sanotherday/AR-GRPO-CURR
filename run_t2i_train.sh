@@ -29,8 +29,8 @@ torchrun --nproc_per_node "$num_gpus" --nnodes "1" --master_addr "localhost" --m
     --top_p 1.0 \
     --top_k 0 \
     --data_seed 42 \
-    --reward_funcs clip_text clip_text_quantize hpsv2_text hpsv2_text_quantize maniqa qwenvl_3b_text qwenvl_fake qwenvl_weird \
-    --reward_weights 1 1 1 1 1 1 1 1 \
+    --reward_funcs vqa_score  \
+    --reward_weights 1\
     --beta 1.0 \
     --num_iterations 1 \
     --max_prompt_length 4096 \
@@ -48,4 +48,5 @@ torchrun --nproc_per_node "$num_gpus" --nnodes "1" --master_addr "localhost" --m
     --save_only_model true \
     --save_total_limit 6 \
     --exit_step  ${steps}\
-    --report_to tensorboard
+    --report_to tensorboard \
+    --sample_strategy timestep

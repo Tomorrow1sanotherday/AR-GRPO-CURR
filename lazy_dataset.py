@@ -6,6 +6,10 @@ from torchvision.datasets.folder import DatasetFolder, IMG_EXTENSIONS
 from torchvision.transforms import InterpolationMode, transforms
 from torch.utils.data import Dataset
 import numpy as np
+import os
+import yaml
+import math
+import random
 
 
 def normalize_01_into_pm1(x):  # normalize x from [0, 1] to [-1, 1] by (x*2) - 1
@@ -181,10 +185,37 @@ class LazySupervisedDataset(Dataset):
             res["prompt"]["geneval_json"]=cur_d["geneval_json"]
         return res
 
+class LazyCurriculumDataset(Dataset):
+    def __init__(self, data_path: str, script_args=None):
+        super().__init__()
+        self.script_args = script_args
+        self.data_list = []
+        with open(data_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        # Flatten all scenes from different difficulty levels
+        
+        for difficulty, scenes_list in data.items():
+            for scene in scenes_list:
+                # Add difficulty info to each scene
+                scene["difficulty"] = difficulty
+                self.data_list.append(scene)
+
+    def __len__(self):
+        return len(self.data_list)
+
+    def __getitem__(self, idx):
+        image = None
+        scene = self.data_list[idx]
+        res={
+            "prompt":{"image":None,"text":scene["prompt"], "qa":scene["qa"], "difficulty":scene["difficulty"]},
+            'solution': image.clone() if image else None,
+        }
+        return res
+
 def build_dataset(data_path,script_args):
     if script_args.dataset_type=="c2i":
         return LazyImageSupervisedDataset(data_path,script_args)
     elif script_args.dataset_type=="t2i":
-        return LazySupervisedDataset(data_path,script_args)
+        return LazyCurriculumDataset(data_path,script_args)
     else:
         raise ValueError(f"unkown dataset_type {script_args.dataset_type}")

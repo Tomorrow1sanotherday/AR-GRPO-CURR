@@ -62,6 +62,7 @@ from trl.trainer.utils import (
     print_prompt_completions_sample,
     selective_log_softmax,
 )
+from curr_sampler import CurriculumRepeatSampler
 
 
 if is_peft_available():
@@ -400,6 +401,7 @@ class GRPOTrainer_M(Trainer):
         callbacks: Optional[list[TrainerCallback]] = None,
         optimizers: tuple[Optional[torch.optim.Optimizer], Optional[torch.optim.lr_scheduler.LambdaLR]] = (None, None),
         peft_config: Optional["PeftConfig"] = None,
+        sample_strategy: str = 'timestep'
     ):
         # Args
         if args is None:
@@ -518,6 +520,9 @@ class GRPOTrainer_M(Trainer):
 
         # Datasets
         self.shuffle_dataset = args.shuffle_dataset
+
+        #sampler
+        self.sample_strategy = sample_strategy
 
         if (
             isinstance(train_dataset, IterableDataset)
@@ -808,21 +813,23 @@ class GRPOTrainer_M(Trainer):
         #                                          ...
         if dataset is None:
             dataset = self.train_dataset
-        return RepeatSampler(
+        return CurriculumRepeatSampler(
             data_source=dataset,
             mini_repeat_count=self.num_generations,
             batch_size=self.args.generation_batch_size // self.num_generations,
             repeat_count=self.num_iterations * self.args.steps_per_generation,
             shuffle=self.shuffle_dataset,
             seed=self.args.seed,
+            strategy=self.sample_strategy
         )
 
     def _get_eval_sampler(self, eval_dataset) -> Sampler:
         # See _get_train_sampler for an explanation of the sampler.
-        return RepeatSampler(
+        return CurriculumRepeatSampler(
             data_source=eval_dataset,
             mini_repeat_count=self.num_generations,
             seed=self.args.seed,
+            strategy=self.sample_strategy
         )
 
     def _enable_gradient_checkpointing(self, model: PreTrainedModel, args: GRPOConfig) -> PreTrainedModel:
@@ -1060,7 +1067,8 @@ class GRPOTrainer_M(Trainer):
         mode = "train" if self.model.training else "eval"
 
         prompts = [x["prompt"] for x in inputs]
-        prompts_text = [maybe_apply_chat_template(example, self.processing_class)["prompt"] for example in inputs]
+        # prompts_text = [maybe_apply_chat_template(example, self.processing_class)["prompt"] for example in inputs]
+        prompts_text = prompts
         prompt_inputs = self.processing_class(
             text=prompts_text, return_tensors="pt", padding=True, padding_side="left", add_special_tokens=False
         )
