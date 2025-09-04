@@ -1,8 +1,8 @@
-export CUDA_VISIBLE_DEVICES=4,5,6,7
+export CUDA_VISIBLE_DEVICES=0,1,2,3
 gpus=(`echo $CUDA_VISIBLE_DEVICES | tr ',' ' '`)
 num_gpus=${#gpus[@]}
 port=2135${gpus[0]}
-steps=600
+steps=4000
 cfg=4.0
 
 # start time, sleep before it 
@@ -12,10 +12,10 @@ run_name="llama_gen_${timestamp}_steps_${steps}_t2i_8_vlm_rewards_base_4_vlm_rew
 torchrun --nproc_per_node "$num_gpus" --nnodes "1" --master_addr "localhost" --master_port "$port" \
     img_gen_grpo_train.py \
     --model_name_or_path="custom/noneexists" \
-    --dataset_name ./dataset/coco_captions_30000.json \
-    --image_root $data_rt/coco \
+    --dataset_name ./dataset/curr_rft_data_20250830_32k.json \
+    --image_root $data_rt/curr_rft \
     --run_name $run_name \
-    --output_dir checkpoints/$run_name \
+    --output_dir checkpoints/ours_ar_timestep/$run_name \
     --vq_ckpt './pretrained_models/vq_ds16_t2i.pt'\
     --gpt_ckpt './pretrained_models/t2i_XL_stage1_256.pt'\
     --gpt_type t2i \
@@ -44,9 +44,9 @@ torchrun --nproc_per_node "$num_gpus" --nnodes "1" --master_addr "localhost" --m
     --gradient_checkpointing false \
     --attn_implementation flash_attention_2 \
     --num_train_epochs 20 \
-    --save_steps 100 \
+    --save_steps 400 \
     --save_only_model true \
-    --save_total_limit 6 \
+    --save_total_limit 100 \
     --exit_step  ${steps}\
     --report_to tensorboard \
     --sample_strategy timestep

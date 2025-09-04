@@ -31,6 +31,6 @@ class ImgGenGRPOTrainer(GRPOTrainer_M):
 
     def _save_checkpoint(self, *args, **kwargs):
         super()._save_checkpoint(*args,**kwargs)
-        #print("step",self.state.global_step)
+        print("save step:",self.state.global_step)
         if self.state.global_step>=self.exit_step:
             exit(0)

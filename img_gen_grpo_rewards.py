@@ -9,7 +9,6 @@ from types import SimpleNamespace
 from typing import List, Dict
 import json
 import t2v_metrics
-from t2v_metrics.models.vqascore_models import clip_t5_model
 from utils.image_process import to_temp_path
 import os
 
@@ -658,7 +657,7 @@ class CLIP_FIDReward(GRPORewardFunc):
 
 
 class VQAScoreReward(GRPORewardFunc):
-    def __init__(self, model="llava-v1.6-13b", log_dir='images/llava', log_file="./log_testcurr.jsonl", 
+    def __init__(self, model="llava-v1.6-13b", log_dir='images/ours_ar_timestep', log_file="./log_testcurr.jsonl", 
                  use_fine_grained=True, use_calibration=False, clone_reward=None, **kwargs):
         super().__init__(**kwargs)
         
@@ -669,25 +668,8 @@ class VQAScoreReward(GRPORewardFunc):
         if clone_reward is not None:
             self.reward_model = clone_reward.reward_model
         else:
-            # 设置问题模板
-            if self.use_fine_grained:
-                try:
-                    clip_t5_model.default_question_template = "{} Please answer yes or no."
-                except ImportError:
-                    print("Warning: t2v_metrics not found, please install it for VQAScore")
-                    self.reward_model = None
-                    exit(0)
-                    return
-            else:
-                try:
-                    clip_t5_model.default_question_template = 'Does this figure show "{}"? Please answer yes or no.'
-                except ImportError:
-                    print("Warning: t2v_metrics not found")
-                    self.reward_model = None
-                    return
-            
             try:
-                self.reward_model = t2v_metrics.VQAScore(model=model, device='cuda', cache_dir="/your_dir")
+                self.reward_model = t2v_metrics.VQAScore(model=model, device='cuda', cache_dir="/mnt/sdb3/runhaofu/hugging_face/hub")
                 if self.model_device:
                     self.reward_model = self.reward_model.to(self.model_device)
                 self.reward_model.eval()

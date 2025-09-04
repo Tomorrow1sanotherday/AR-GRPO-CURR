@@ -26,7 +26,7 @@ from typing import Tuple
 from copy import deepcopy
 
 reward_funcs_registry = {
-    "vqa_escor": VQAScoreReward,
+    "vqa_score": VQAScoreReward,
     # "clip_distance": CLIPDistanceReward,
     # "clip_quantize": CLIPDistanceReward,
     # "clip_text": CLIPTextReward,

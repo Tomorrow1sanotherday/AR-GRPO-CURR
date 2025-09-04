@@ -31,3 +31,14 @@ dist/
 
 #其他文件夹
 pretrained_models/
+
+#数据集
+dataset/
+images/
+
+#日志
+log_testcurr.jsonl
+runs/
+
+#checkpoint
+checkpoints/
