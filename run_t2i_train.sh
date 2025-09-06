@@ -2,8 +2,8 @@ export CUDA_VISIBLE_DEVICES=0,1,2,3
 gpus=(`echo $CUDA_VISIBLE_DEVICES | tr ',' ' '`)
 num_gpus=${#gpus[@]}
 port=2135${gpus[0]}
-steps=4000
-cfg=4.0
+steps=8000
+cfg=2.0
 
 # start time, sleep before it 
 timestamp=$(date "+%Y%m%d%H%M%S")
@@ -44,9 +44,9 @@ torchrun --nproc_per_node "$num_gpus" --nnodes "1" --master_addr "localhost" --m
     --gradient_checkpointing false \
     --attn_implementation flash_attention_2 \
     --num_train_epochs 20 \
-    --save_steps 400 \
+    --save_steps 800 \
     --save_only_model true \
     --save_total_limit 100 \
     --exit_step  ${steps}\
     --report_to tensorboard \
-    --sample_strategy timestep
+    --sample_strategy timestep 

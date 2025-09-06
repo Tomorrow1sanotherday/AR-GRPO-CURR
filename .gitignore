@@ -29,9 +29,6 @@ build/
 dist/
 *.egg-info/
 
-#其他文件夹
-pretrained_models/
-
 #数据集
 dataset/
 images/
@@ -42,3 +39,7 @@ runs/
 
 #checkpoint
 checkpoints/
+
+#模型
+hf_cache/
+pretrained_models/

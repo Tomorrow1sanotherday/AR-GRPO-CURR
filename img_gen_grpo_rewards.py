@@ -657,7 +657,7 @@ class CLIP_FIDReward(GRPORewardFunc):
 
 
 class VQAScoreReward(GRPORewardFunc):
-    def __init__(self, model="llava-v1.6-13b", log_dir='images/ours_ar_timestep', log_file="./log_testcurr.jsonl", 
+    def __init__(self, model="llava-v1.6-13b", log_dir='images/ours_ar_timestep', log_file="logs/log_testcurr.jsonl", 
                  use_fine_grained=True, use_calibration=False, clone_reward=None, **kwargs):
         super().__init__(**kwargs)
         
@@ -669,7 +669,7 @@ class VQAScoreReward(GRPORewardFunc):
             self.reward_model = clone_reward.reward_model
         else:
             try:
-                self.reward_model = t2v_metrics.VQAScore(model=model, device='cuda', cache_dir="/mnt/sdb3/runhaofu/hugging_face/hub")
+                self.reward_model = t2v_metrics.VQAScore(model=model, device='cuda')
                 if self.model_device:
                     self.reward_model = self.reward_model.to(self.model_device)
                 self.reward_model.eval()
@@ -679,8 +679,11 @@ class VQAScoreReward(GRPORewardFunc):
 
         self.log_dir = log_dir
         os.makedirs(log_dir, exist_ok=True)
+        log_file_dir = os.path.dirname(self.log_file)
+        if log_file_dir:
+             os.makedirs(log_file_dir, exist_ok=True)
+
         self.log_file = log_file
-        # 初始化日志文件
         try:
             with open(self.log_file, "w", encoding="utf-8") as f:
                 pass
@@ -692,16 +695,16 @@ class VQAScoreReward(GRPORewardFunc):
             print("VQAScore model not available.")
             exit(0)
             
-        # 提取图像路径和场景数据
+        # Get image paths and scene data
         if self.use_fine_grained:
-            # 需要从prompts中提取qa数据
+            # Need get QA data from prompts
             if "qa" not in prompts[0]:
                 print("Warning: Fine-grained mode requires 'qa' data in prompts")
                 return [0.0] * len(prompts)
             scenes = [{"qa": p["qa"], "prompt": p.get("text", ""), "difficulty": p.get("difficulty", "unknown")} 
                      for p in prompts]
         else:
-            # 使用prompt模式
+            # Use prompt only
             if "text" not in prompts[0]:
                 print("Warning: Prompt mode requires 'prompt' data in prompts")
                 return [0.0] * len(prompts)
@@ -742,7 +745,7 @@ class VQAScoreReward(GRPORewardFunc):
 
                     support_data = {"questions": questions, "dependencies": dependencies, "question_types": question_types}
                     
-                    # 处理图像输入
+                    # Process image
                     image_path = to_temp_path(image, img_name=scene['prompt'], log_dir=self.log_dir)
                     image_input = [image_path] 
                     
@@ -792,7 +795,7 @@ class VQAScoreReward(GRPORewardFunc):
 
                 vqa_score_list.append(avg_vqa_score)
                 
-                # 记录日志
+                # Write logs
                 try:
                     log_data = {
                         "image_path": image_path,
