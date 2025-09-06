@@ -1,8 +1,8 @@
-export CUDA_VISIBLE_DEVICES=0,1,2,3
+export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 gpus=(`echo $CUDA_VISIBLE_DEVICES | tr ',' ' '`)
 num_gpus=${#gpus[@]}
 port=2135${gpus[0]}
-steps=8000
+steps=4000
 cfg=2.0
 
 # start time, sleep before it 
@@ -35,7 +35,7 @@ torchrun --nproc_per_node "$num_gpus" --nnodes "1" --master_addr "localhost" --m
     --num_iterations 1 \
     --max_prompt_length 4096 \
     --learning_rate 1e-5 \
-    --per_device_train_batch_size 16 \
+    --per_device_train_batch_size 8 \
     --gradient_accumulation_steps 1 \
     --logging_step 1 \
     --bf16 true \
